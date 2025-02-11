@@ -1,0 +1,19 @@
+Overall Classification Report:
+
+infringement:
+  Precision: 0.844
+  Recall: 0.900
+  F1-score: 0.871
+  Support: 30.0
+
+patentability:
+  Precision: 0.650
+  Recall: 0.765
+  F1-score: 0.703
+  Support: 17.0
+
+validity:
+  Precision: 0.905
+  Recall: 0.864
+  F1-score: 0.884
+  Support: 22.0

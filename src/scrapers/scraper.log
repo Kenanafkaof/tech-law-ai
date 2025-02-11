@@ -1,0 +1,65 @@
+2025-02-01 19:27:46,164 - main - INFO - CourtListener client initialized
+2025-02-01 19:27:46,165 - main - INFO - TechLawScraper initialized
+2025-02-01 19:27:46,165 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:28:16,083 - main - INFO - CourtListener client initialized
+2025-02-01 19:28:16,083 - main - INFO - TechLawScraper initialized
+2025-02-01 19:28:16,084 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:29:37,735 - main - INFO - Fetched page 1/5 (20 cases)
+2025-02-01 19:31:00,451 - main - INFO - Fetched page 2/5 (40 cases)
+2025-02-01 19:32:27,418 - main - INFO - Fetched page 3/5 (60 cases)
+2025-02-01 19:32:59,561 - main - INFO - Reached end of available pages
+2025-02-01 19:32:59,562 - main - INFO - Fetched 67 cases total
+2025-02-01 19:32:59,563 - main - INFO - Processing raw data...
+2025-02-01 19:32:59,569 - main - INFO - Processed 67 cases successfully
+2025-02-01 19:42:17,580 - main - INFO - CourtListener client initialized
+2025-02-01 19:42:17,580 - main - INFO - TechLawScraper initialized
+2025-02-01 19:42:17,581 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:42:59,154 - main - INFO - CourtListener client initialized
+2025-02-01 19:42:59,154 - main - INFO - TechLawScraper initialized
+2025-02-01 19:42:59,154 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:49:20,609 - main - INFO - CourtListener client initialized
+2025-02-01 19:49:20,609 - main - INFO - TechLawScraper initialized
+2025-02-01 19:49:20,609 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:49:31,433 - main - INFO - CourtListener client initialized
+2025-02-01 19:49:31,434 - main - INFO - TechLawScraper initialized
+2025-02-01 19:49:31,434 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:50:53,548 - main - INFO - Fetched page 1/5 (20 cases)
+2025-02-01 19:52:11,668 - main - INFO - Fetched page 2/5 (40 cases)
+2025-02-01 19:53:29,457 - main - INFO - Fetched page 3/5 (60 cases)
+2025-02-01 19:53:58,259 - main - INFO - Reached end of available pages
+2025-02-01 19:53:58,260 - main - INFO - Fetched 67 cases total
+2025-02-01 19:53:58,261 - main - INFO - Processing raw data...
+2025-02-01 19:53:58,266 - main - INFO - Processed 67 cases successfully
+2025-02-01 19:57:25,114 - main - INFO - CourtListener client initialized
+2025-02-01 19:57:25,114 - main - INFO - TechLawScraper initialized
+2025-02-01 19:57:25,114 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:58:37,754 - main - INFO - CourtListener client initialized
+2025-02-01 19:58:37,754 - main - INFO - TechLawScraper initialized
+2025-02-01 19:58:37,754 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 19:59:51,277 - main - INFO - Fetched page 1/5 (20 cases)
+2025-02-01 20:01:07,151 - main - INFO - Fetched page 2/5 (40 cases)
+2025-02-01 20:02:22,089 - main - INFO - Fetched page 3/5 (60 cases)
+2025-02-01 20:02:49,218 - main - INFO - Reached end of available pages
+2025-02-01 20:02:49,218 - main - INFO - Fetched 67 cases total
+2025-02-01 20:02:49,219 - main - INFO - Processing raw data...
+2025-02-01 20:02:49,227 - main - INFO - Processed 67 cases successfully
+2025-02-01 20:07:33,469 - main - INFO - CourtListener client initialized
+2025-02-01 20:07:33,469 - main - INFO - TechLawScraper initialized
+2025-02-01 20:07:33,469 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 20:07:59,480 - main - INFO - Fetched page 1/5 (20 cases)
+2025-02-01 20:08:24,863 - main - INFO - Fetched page 2/5 (40 cases)
+2025-02-01 20:08:50,713 - main - INFO - Fetched page 3/5 (60 cases)
+2025-02-01 20:09:01,181 - main - INFO - Reached end of available pages
+2025-02-01 20:09:01,182 - main - INFO - Fetched 67 cases total
+2025-02-01 20:09:01,183 - main - INFO - Processing raw data...
+2025-02-01 20:09:01,188 - main - INFO - Processed 67 cases successfully
+2025-02-01 20:09:38,367 - main - INFO - CourtListener client initialized
+2025-02-01 20:09:38,367 - main - INFO - TechLawScraper initialized
+2025-02-01 20:09:38,367 - main - INFO - Starting tech case fetch: 2024-01-01 to 2025-02-01
+2025-02-01 20:10:03,883 - main - INFO - Fetched page 1/5 (20 cases)
+2025-02-01 20:10:29,719 - main - INFO - Fetched page 2/5 (40 cases)
+2025-02-01 20:10:55,994 - main - INFO - Fetched page 3/5 (60 cases)
+2025-02-01 20:11:05,887 - main - INFO - Reached end of available pages
+2025-02-01 20:11:05,888 - main - INFO - Fetched 66 cases total
+2025-02-01 20:11:05,889 - main - INFO - Processing raw data...
+2025-02-01 20:11:05,895 - main - INFO - Processed 66 cases successfully
