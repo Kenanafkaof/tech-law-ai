@@ -1,2 +1,45 @@
-Similar Case Strategy: Extract winning arguments from similar cases
-Document Generation: Auto-generate basic legal documents
+Case Categorization & Classification
+
+Model: Legal Text Classifier (BERT-based or GPT-based fine-tuned model)
+Goal: Categorize cases based on type (e.g., patent, software, AI regulations) using tech_keywords_found and full_text.
+Approach: Train a model on labeled cases to predict case categories automatically.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legal Document Summarization
+
+Model: Abstractive Summarization (T5, BART, GPT fine-tuning)
+Goal: Summarize full_text into short legal insights for quick review.
+Approach: Use legal summarization models (e.g., LexRank, BART for summarization).
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Case Outcome Prediction
+
+Model: Decision Outcome Predictor (Logistic Regression, XGBoost, Transformer-based model)
+Goal: Predict case outcomes based on full_text, judge, and court.
+Approach: Train using historical data, leveraging factors like cited cases (citing_cases, cited_by).
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legal Citation Network Analysis
+
+Model: Graph Neural Networks (GNNs) or Citation Network Models
+Goal: Identify the most influential cases based on opinion_cites, citing_cases, and cited_by.
+Approach: Construct a legal citation graph and use GNNs for case importance ranking.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legal Named Entity Recognition (NER) for Key Actors
+
+Model: Custom NER model (spaCy, BERT-based legal NER)
+Goal: Extract key entities (e.g., judge, court, attorney, docket_number) from full_text.
+Approach: Train or fine-tune a legal-specific NER model.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legal Search & Question Answering
+
+Model: Retrieval-Augmented Generation (RAG) with LLMs
+Goal: Allow users to query specific legal questions and retrieve relevant cases.
+Approach: Use a dense vector search (FAISS, Elasticsearch) over full_text with an LLM-based QA system.

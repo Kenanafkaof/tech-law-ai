@@ -8,7 +8,6 @@ import spacy
 from datetime import datetime
 import networkx as nx
 import pickle 
-import os 
 from typing import List
 import gc
 import torch

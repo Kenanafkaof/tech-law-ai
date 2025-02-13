@@ -8,6 +8,22 @@ import traceback
 import numpy as np
 import pandas as pd
 from functools import lru_cache
+import joblib
+from patent_model.patent_model import EnhancedPatentAnalyzer
+from temporal_analysis.visualizer import TechLawData
+from flask_cors import CORS
+from auth import require_auth
+
+model = joblib.load("../models/legal_case_model.pkl")
+
+# Load the TF-IDF vectorizer
+tfidf_vectorizer = joblib.load("../models/tfidf_vectorizer.pkl")
+
+# Load label encoders
+court_label_encoder = joblib.load("../models/court_label_encoder.pkl")
+judge_label_encoder = joblib.load("../models/judge_label_encoder.pkl")
+
+data_provider = TechLawData('../datasets/test_all_tech_cases_fixed.csv')
 
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     """Remove duplicate cases while preserving the most complete entries."""
@@ -35,10 +51,19 @@ def cached_strategy_analysis(text: str) -> dict:
 
 def create_app():
     app = Flask(__name__)
+
+    # Enable CORS
+    CORS(app, resources={
+        r"/*": {
+            "origins": ["http://localhost:3000"],
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
     
     # Initialize both analyzer and classifier with proper error handling
     try:
-        global analyzer, classifier, strategic_analyzer
+        global analyzer, classifier, strategic_analyzer, patent_analyzer
         
         # Initialize analyzers
         print("Initializing analyzers...")
@@ -52,6 +77,10 @@ def create_app():
         # Initialize classifier
         print("Initializing TemporalClassifier...")
         classifier = EnhancedTemporalClassifier()
+
+        patent_analyzer = EnhancedPatentAnalyzer.get_instance(
+            '../datasets/patent_data/patent_data_20250205_231903_combined_patents_training.csv'
+        )
         
         # Load and prepare initial data
         print("Loading and cleaning case data...")
@@ -76,6 +105,7 @@ def create_app():
 
 
     @app.route("/search", methods=["POST"])
+    @require_auth
     def search_endpoint():
         try:
             data = request.get_json()
@@ -104,6 +134,7 @@ def create_app():
             }), 500
 
     @app.route("/case_network", methods=["GET"])
+    @require_auth
     def get_case_network():
         try:
             return jsonify({
@@ -124,6 +155,7 @@ def create_app():
             }), 500
         
     @app.route("/classify", methods=["POST"])
+    @require_auth
     def classify_case():
         """Optimized endpoint for classifying legal cases"""
         try:
@@ -172,6 +204,7 @@ def create_app():
             }), 500
 
     @app.route("/temporal_analysis", methods=["POST"])
+    @require_auth
     def analyze_temporal():
         """Endpoint for detailed temporal analysis of legal cases"""
         try:
@@ -221,6 +254,7 @@ def create_app():
             }), 500
 
     @app.route("/analyze_strategy", methods=["POST"])
+    @require_auth
     def analyze_strategy():
         """Endpoint for strategic case analysis"""
         try:
@@ -280,6 +314,7 @@ def create_app():
             }), 500
 
     @app.route("/model_status", methods=["GET"])
+    @require_auth
     def model_status():
         """Endpoint for checking model status"""
         try:
@@ -309,6 +344,7 @@ def create_app():
             }), 500
          
     @app.route("/health", methods=["GET"])
+    @require_auth
     def health_check():
         try:
             model_status = {
@@ -382,6 +418,234 @@ def create_app():
                 "traceback": traceback.format_exc()
             }), 500
 
+    @app.route("/patent/analyze", methods=["POST"])
+    @require_auth
+    def analyze_patent_data():
+        """Endpoint for patent data analysis"""
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({"error": "Please provide analysis parameters."}), 400
+            
+            tech_center = data.get("tech_center", "2100")  # Default to TC 2100
+            
+            analysis = patent_analyzer.analyze_tech_center(tech_center)
+            
+            return jsonify({
+                "analysis": analysis,
+                "metadata": {
+                    "timestamp": datetime.now().isoformat(),
+                    "tech_center": tech_center,
+                    "analysis_version": "patent_v1"
+                }
+            })
+            
+        except Exception as e:
+            print(f"Error in patent analysis endpoint: {str(e)}")
+            traceback.print_exc()
+            return jsonify({
+                "error": "Internal server error",
+                "details": str(e)
+            }), 500
+
+
+    @app.route("/patent/health", methods=["GET"])
+    @require_auth
+    def patent_analyzer_health():
+        """Endpoint for checking patent analyzer health"""
+        try:
+            return jsonify(patent_analyzer.get_health_status())
+        except Exception as e:
+            return jsonify({
+                "status": "error",
+                "error": str(e)
+            }), 500
+        
+    @app.route("/predict", methods=["POST"])
+    @require_auth
+    def predict_case_outcome():
+        """
+        Predicts the tech relevance score of a given legal case.
+        Handles missing judge information gracefully.
+        """
+        try:
+            # Parse request data
+            data = request.get_json()
+            if not data or "full_text" not in data:
+                return jsonify({"error": "Please provide case text."}), 400
+            
+            # Extract features
+            case_text = data["full_text"]
+            court = data.get("court", "")
+            judge = data.get("judge", None)  # Judge may be missing
+            citing_cases_count = len(data.get("citing_cases", []))
+            cited_by_count = len(data.get("cited_by", []))
+
+            # Preprocess text
+            if not isinstance(case_text, str):
+                return jsonify({"error": "Invalid input: full_text must be a string"}), 400
+                
+            # Convert to string and create a list with a single element
+            processed_text = [str(case_text)]
+            
+            # Transform using TF-IDF
+            text_vector = tfidf_vectorizer.transform(processed_text)
+
+
+            # Encode court (if provided)
+            court_encoded = court_label_encoder.transform([court])[0] if court else 0
+
+            # Handle missing judge
+            if judge and judge in judge_label_encoder.classes_:
+                judge_encoded = judge_label_encoder.transform([judge])[0]
+            else:
+                judge_encoded = 0  # Default value for unknown/missing judge
+
+            # Create input feature array
+            input_features = np.hstack((text_vector.toarray(), [[court_encoded, judge_encoded, citing_cases_count, cited_by_count]]))
+
+            # Make prediction
+            prediction = model.predict(input_features)[0]
+
+            return jsonify({
+                "prediction": int(prediction),
+                "confidence": model.predict_proba(input_features).tolist()
+            })
+
+        except Exception as e:
+            print(f"Prediction Error: {str(e)}")
+            return jsonify({"error": "Internal server error", "details": str(e)}), 500
+
+    @app.route("/cases_over_time", methods=["GET"])
+    @require_auth
+    def get_cases_over_time():
+        return data_provider.get_cases_over_time()
+
+    @app.route("/keyword_trends", methods=["GET"])
+    @require_auth
+    def get_keyword_trends():
+        return data_provider.get_keyword_trends()
+
+    @app.route("/citations_over_time", methods=["GET"])
+    @require_auth
+    def get_citations_over_time():
+        return data_provider.get_citations_over_time()
+    
+    @app.route("/analyze_trends", methods=["GET"])
+    @require_auth
+    def analyze_trends():
+        """Get trend analysis for specified keywords"""
+        try:
+            # Get keywords from query parameters, default to top tech keywords
+            keywords = request.args.getlist('keywords')
+            if not keywords:
+                keywords = ['technology', 'patent', 'software']
+                
+            results = {}
+            for keyword in keywords:
+                forecast_result = data_provider.forecast_keyword_trends(keyword)
+                
+                results[keyword] = {
+                    'historical_data': [
+                        {
+                            'year': point['Year'],
+                            'value': point['Count']
+                        } for point in forecast_result.historical_data
+                    ],
+                    'forecast': [
+                        {
+                            'year': point['Year'],
+                            'value': point['Predicted_Count'],
+                            'lowerBound': ci['Lower'],
+                            'upperBound': ci['Upper']
+                        } for point, ci in zip(
+                            forecast_result.forecast,
+                            forecast_result.confidence_intervals
+                        )
+                    ],
+                    'metrics': {
+                        'totalMentions': forecast_result.metrics['total_mentions'],
+                        'meanCount': forecast_result.metrics['mean_count'],
+                        'maxCount': forecast_result.metrics['max_count'],
+                        'longTermTrend': forecast_result.metrics['long_term_trend'],
+                        'recentTrend': forecast_result.metrics['recent_trend'],
+                        'trendInterpretation': forecast_result.metrics['trend_interpretation']
+                    }
+                }
+                
+            return jsonify({
+                'status': 'success',
+                'data': results,
+                'metadata': {
+                    'timestamp': datetime.now().isoformat(),
+                    'keywords_analyzed': keywords
+                }
+            })
+            
+        except Exception as e:
+            print(f"Error in trend analysis endpoint: {str(e)}")
+            traceback.print_exc()
+            return jsonify({
+                'status': 'error',
+                'error': str(e),
+                'details': traceback.format_exc()
+            }), 500
+
+    @app.route("/available_keywords", methods=["GET"])
+    @require_auth
+    def get_available_keywords():
+        """Get list of available keywords for trend analysis"""
+        try:
+            return jsonify(data_provider.get_available_keywords())
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'error': str(e)
+            }), 500
+
+    @app.route("/keyword_summary", methods=["GET"])
+    @require_auth
+    def get_keyword_summary():
+        """Get summary statistics for keywords with proper JSON serialization."""
+        try:
+            analysis = data_provider.analyze_keyword_trends()
+            
+            # Convert NumPy types and booleans to standard Python types
+            relevant_keywords = []
+            for keyword in analysis['relevant_keywords']:
+                relevant_keywords.append({
+                    'keyword': str(keyword['keyword']),
+                    'total_mentions': int(keyword['total_mentions']),
+                    'years_present': int(keyword['years_present']),
+                    'first_year': int(keyword['first_year']),
+                    'last_year': int(keyword['last_year']),
+                    'max_count': float(keyword['max_count']),
+                    'mean_count': float(keyword['mean_count']),
+                    'has_recent_data': bool(keyword['has_recent_data']),  # Convert numpy.bool_ to Python bool
+                    'trend': float(keyword['trend'])
+                })
+
+            return jsonify({
+                'status': 'success',
+                'data': {
+                    'relevantKeywords': relevant_keywords,
+                    'topTrends': relevant_keywords[:10],
+                    'summary': {
+                        'totalKeywords': len(analysis['all_stats']),
+                        'activeKeywords': len(relevant_keywords),
+                        'timeRange': f"{min(k['first_year'] for k in relevant_keywords)} - {max(k['last_year'] for k in relevant_keywords)}"
+                    }
+                }
+            })
+
+        except Exception as e:
+            print(f"Error in keyword summary: {str(e)}")
+            traceback.print_exc()
+            return jsonify({
+                'status': 'error',
+                'error': str(e)
+            }), 500
+            
     return app
 
 # Initialize the analyzer
