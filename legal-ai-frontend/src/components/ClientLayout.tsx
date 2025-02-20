@@ -59,7 +59,6 @@ function UserProfile({ className }: { className?: string }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Always call hooks before any conditional returns.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -67,14 +66,11 @@ function UserProfile({ className }: { className?: string }) {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () =>
-      document.removeEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Now we can conditionally render if no user.
   if (!user) return null;
 
-  // Normalize the default Google avatar.
   if (
     user.photoURL === null ||
     user.photoURL === "https://lh3.googleusercontent.com/a/ACg8ocK7JndtInn8UQuKE4AsAFJfhZNowcp-TAZ4ux6GOdIyBeaZmm0=s96-c"
@@ -96,31 +92,31 @@ function UserProfile({ className }: { className?: string }) {
   };
 
   return (
-    <div
-      className={cn(
-        "flex flex-col items-center justify-center gap-4 px-4 py-3 w-full",
-        className
-      )}
-      ref={dropdownRef}
-    >
-      <div className="flex items-center gap-3">
-        <Avatar className="h-10 w-10">
+    <div className={cn("flex items-center w-full px-2 py-2", className)} ref={dropdownRef}>
+      <div className="flex items-center min-w-0 gap-2 flex-1">
+        <Avatar className="h-10 w-10 flex-shrink-0">
           {user.photoURL ? (
             <AvatarImage src={user.photoURL} alt={displayName} />
           ) : (
-            <AvatarFallback className="bg-primary/10">
+            <AvatarFallback className="bg-primary/5 text-xs">
               {initials}
             </AvatarFallback>
           )}
         </Avatar>
-        <div className="flex flex-col">
-          <span className="font-medium">{displayName}</span>
-          <span className="text-sm text-muted-foreground">{email}</span>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-medium leading-none">{displayName}</div>
+          <div className="truncate text-xs text-muted-foreground mt-0.5">{email}</div>
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      
+      <div className="flex items-center gap-1 flex-shrink-0">
         <ThemeToggle />
-        <Button variant="outline" size="sm" onClick={handleLogout}>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={handleLogout}
+          className="text-xs h-7 px-2"
+        >
           Logout
         </Button>
       </div>

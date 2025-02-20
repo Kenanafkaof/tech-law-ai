@@ -36,7 +36,8 @@ const LoginPage = () => {
               </div>
               <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
               <p className="text-sm text-muted-foreground">
-                Please enter your details.
+                Please login to continue or view our demo <a href="#"
+                  className="text-primary hover:underline">here</a>
               </p>
             </div>
 
@@ -69,7 +70,7 @@ const LoginPage = () => {
             <img
               src="https://4legalleads.com/wp-content/uploads/2020/05/4legalleads-building-successful-attorney-client-relationships.jpg"
               alt="Login decoration"
-              className="object-cover w-full h-full opacity-80"
+              className="object-cover w-full h-full opacity-100"
             />
           </div>
         </div>
