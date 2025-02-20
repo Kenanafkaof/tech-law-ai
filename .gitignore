@@ -1,0 +1,3 @@
+src/datasets/all_tech_cases_5year.csv
+src/utils/patent_nlp_model_bert/model.safetensors
+src/datasets/high_relevance_tech_cases_5year.csv
