@@ -1,5 +1,5 @@
-**Legal AI: Democratizing Legal Knowledge Through AI**
-<br /><br />
+#**Legal AI: Democratizing Legal Knowledge Through AI**
+<br />
 
 _🔍 Overview_
 A cutting-edge legal AI platform that leverages Natural Language Processing (NLP) to make legal knowledge more accessible and understandable for everyone. Our system analyzes legal documents, case law, and statutes to provide clear, actionable insights for individuals seeking legal information.
