@@ -1,4 +1,4 @@
-#**Legal AI: Democratizing Legal Knowledge Through AI**
+**#Legal AI: Democratizing Legal Knowledge Through AI**
 <br />
 
 _🔍 Overview_
