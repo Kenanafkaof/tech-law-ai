@@ -13,6 +13,8 @@ _🚀 Features_
   Semantic Search: Intelligent search functionality that understands context and legal terminology
   User-Friendly Interface: Clean, intuitive frontend designed for both legal professionals and the general public
   Patent Analysis: Specialized tools for understanding patent law and intellectual property
+<br /> 
+**Future additions of human rights law in the works.**
 
 **🛠️ Tech Stack**
 
